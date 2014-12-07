@@ -19,3 +19,9 @@ HwndExtensions/obj/Debug/GeneratedInternalTypeHelper.g.i.cs
 HwndExtensions/obj/Debug/HwndExtensions.csproj.FileListAbsolute.txt
 HwndExtensions/obj/Debug/HwndExtensions.Properties.Resources.resources
 HwndExtensions/obj/Debug/HwndExtensions_MarkupCompile.i.lref
+Demo/bin/Debug/Demo.vshost.exe.manifest
+Demo/obj/Debug/BrowserAdornment.g.cs
+Demo/obj/Debug/BrowserAdornment.g.i.cs
+Demo/obj/Debug/Demo_MarkupCompile.lref
+Demo/obj/Debug/GeneratedInternalTypeHelper.g.cs
+Demo/obj/Debug/GeneratedInternalTypeHelper.g.i.cs

@@ -9,7 +9,7 @@ namespace HwndExtensions.Adorner
     /// <summary>
     /// A class for managing an adornment above all other content (including non-WPF child windows (hwnd), unlike the WPF Adorner classes)
     /// </summary>
-    public class HwndAdorner
+    public sealed class HwndAdorner : IDisposable
     {
         // See the HwndAdornerElement class for a simple usage example.
         // 
@@ -31,6 +31,8 @@ namespace HwndExtensions.Adorner
 
         private Point m_parentWinLocation;
         private Rect m_boundingBox;
+
+        private bool m_disposed;
 
         #endregion
 
@@ -117,6 +119,9 @@ namespace HwndExtensions.Adorner
             get { return m_adornment; }
             set
             {
+                if(m_disposed)
+                    throw new ObjectDisposedException("HwndAdorner");
+
                 m_adornment = value;
                 if (m_elementAttachedTo.IsLoaded)
                     m_hwndAdornmentRoot.Content = m_adornment;
@@ -284,6 +289,26 @@ namespace HwndExtensions.Adorner
             }
 
             return IntPtr.Zero;
+        }
+
+        #endregion
+
+        #region IDisposable Imp
+
+        public void Dispose()
+        {
+            if(m_disposed) return;
+
+            DisconnectFromGroup();
+            m_hwndAdornmentRoot.Content = null;
+            DisposeHwndSource();
+
+            m_elementAttachedTo.Loaded -= OnLoaded;
+            m_elementAttachedTo.Unloaded -= OnUnloaded;
+            m_elementAttachedTo.IsVisibleChanged -= OnIsVisibleChanged;
+            m_elementAttachedTo.LayoutUpdated -= OnLayoutUpdated;
+
+            m_disposed = true;
         }
 
         #endregion

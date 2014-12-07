@@ -76,6 +76,7 @@ namespace HwndExtensions
             {
                 if (adorner != null)
                 {
+                    adorner.Dispose();
                     SetHwndAdorner(element, null);
                 }
             }
