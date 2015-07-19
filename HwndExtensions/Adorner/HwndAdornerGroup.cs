@@ -70,10 +70,20 @@ namespace HwndExtensions.Adorner
                 SetOwnership(adorner);
                 ActivateInGroupLimits(adorner);
                 adorner.InvalidateAppearance();
-                adorner.UpdateOwnerPosition(m_ownerSource.RootVisual.PointToScreen(new Point()));
+
+                var root = (UIElement) m_ownerSource.RootVisual;
+                adorner.UpdateOwnerPosition(GetRectFromRoot(root));
             }
 
             return true;
+        }
+
+        private static Rect GetRectFromRoot(UIElement root)
+        {
+            return new Rect(
+                root.PointToScreen(new Point()), 
+                root.PointToScreen(new Point(root.RenderSize.Width, root.RenderSize.Height))
+                );
         }
 
         internal bool RemoveAdorner(HwndAdorner adorner)
@@ -173,13 +183,13 @@ namespace HwndExtensions.Adorner
 
         private void SetPosition()
         {
-            var visual = m_ownerSource.RootVisual;
-            if(visual == null) return;
+            var root = m_ownerSource.RootVisual as UIElement;
+            if(root == null) return;
 
-            var point = visual.PointToScreen(new Point());
+            var rect = GetRectFromRoot(root);
             foreach (var adorner in m_adornersInGroup)
             {
-                adorner.UpdateOwnerPosition(point);
+                adorner.UpdateOwnerPosition(rect);
             }
         }
 

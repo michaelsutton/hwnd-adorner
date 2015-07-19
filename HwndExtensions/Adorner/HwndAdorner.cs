@@ -29,7 +29,7 @@ namespace HwndExtensions.Adorner
         private HwndSource m_hwndSource;
         private bool m_shown;
 
-        private Point m_parentWinLocation;
+        private Rect m_parentBoundingBox;
         private Rect m_boundingBox;
 
         private bool m_disposed;
@@ -50,8 +50,7 @@ namespace HwndExtensions.Adorner
         public HwndAdorner(FrameworkElement attachedTo)
         {
             m_elementAttachedTo = attachedTo;
-            m_parentWinLocation = new Point();
-            m_boundingBox = new Rect(new Point(), new Size());
+            m_parentBoundingBox = m_boundingBox = new Rect(new Point(), new Size());
 
             m_hwndAdornmentRoot = new HwndAdornmentRoot()
                             {
@@ -96,11 +95,11 @@ namespace HwndExtensions.Adorner
             }
         }
 
-        internal void UpdateOwnerPosition(Point point)
+        internal void UpdateOwnerPosition(Rect rect)
         {
-            if (!m_parentWinLocation.Equals(point))
+            if (!m_parentBoundingBox.Equals(rect))
             {
-                m_parentWinLocation = point;
+                m_parentBoundingBox = rect;
                 SetAbsolutePosition();
             }
         }
@@ -200,7 +199,7 @@ namespace HwndExtensions.Adorner
         {
             DisconnectFromGroup();
 
-            var manager = VisualTreeExtensions.TryFindVisualAncestor<IHwndAdornerManager>(m_elementAttachedTo);
+            var manager = WPFTreeExtensions.TryFindVisualAncestor<IHwndAdornerManager>(m_elementAttachedTo);
             m_hwndAdornerGroup = manager == null ? new HwndAdornerGroup(m_elementAttachedTo) : manager.AdornerGroup;
             m_hwndAdornerGroup.AddAdorner(this);
         }
@@ -218,10 +217,10 @@ namespace HwndExtensions.Adorner
             if (m_hwndSource == null) return;
 
             Win32.SetWindowPos(m_hwndSource.Handle, IntPtr.Zero,
-                (int) (m_parentWinLocation.X + m_boundingBox.X),
-                (int) (m_parentWinLocation.Y + m_boundingBox.Y),
-                (int) (m_boundingBox.Width),
-                (int) (m_boundingBox.Height),
+                (int) (m_parentBoundingBox.X + m_boundingBox.X),
+                (int) (m_parentBoundingBox.Y + m_boundingBox.Y),
+                (int) (Math.Min(m_boundingBox.Width, m_parentBoundingBox.Width - m_boundingBox.X)),
+                (int) (Math.Min(m_boundingBox.Height, m_parentBoundingBox.Height - m_boundingBox.Y)),
                 SET_ONLY_LOCATION | Win32.SWP_ASYNCWINDOWPOS);
         }
 
@@ -239,8 +238,8 @@ namespace HwndExtensions.Adorner
                 WindowClassStyle = classStyle,
                 WindowStyle = style,
                 ExtendedWindowStyle = styleEx,
-                PositionX = (int)(m_parentWinLocation.X + m_boundingBox.X),
-                PositionY = (int)(m_parentWinLocation.Y + m_boundingBox.Y),
+                PositionX = (int)(m_parentBoundingBox.X + m_boundingBox.X),
+                PositionY = (int)(m_parentBoundingBox.Y + m_boundingBox.Y),
                 Width = (int)(m_boundingBox.Width),
                 Height = (int)(m_boundingBox.Height)
             };

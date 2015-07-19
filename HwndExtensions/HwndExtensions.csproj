@@ -80,7 +80,7 @@
     <Compile Include="Utils\HwndSourceConnector.cs" />
     <Compile Include="Utils\RectUtil.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
-    <Compile Include="Utils\VisualTreeExtensions.cs" />
+    <Compile Include="Utils\WPFTreeExtensions.cs" />
     <Compile Include="Utils\Win32.cs" />
     <Compile Include="Utils\WindowConnector.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

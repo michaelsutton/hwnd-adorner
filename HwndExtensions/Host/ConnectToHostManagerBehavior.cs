@@ -41,7 +41,7 @@ namespace HwndExtensions.Host
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            var manager = VisualTreeExtensions.TryFindVisualAncestor<IHwndHostManager>(AssociatedObject);
+            var manager = WPFTreeExtensions.TryFindVisualAncestor<IHwndHostManager>(AssociatedObject);
             if (m_hostManager != manager)
             {
                 DisconnectFromManager();

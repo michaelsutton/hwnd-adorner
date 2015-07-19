@@ -13,7 +13,7 @@ namespace HwndExtensions.Host
     /// A custom control for managing an HwndHost child and presenting an Adornment over it. 
     /// Inherited classes must control the access and life cycle of the HwndHost child
     /// </summary>
-    public abstract class HwndHostPresenter : FrameworkElement, IDisposable
+    public class HwndHostPresenter : FrameworkElement, IDisposable
     {
         #region Fields
 
@@ -37,7 +37,7 @@ namespace HwndExtensions.Host
             EventManager.RegisterClassHandler(typeof(HwndHostPresenter), HwndExtensions.HwndMouseLeaveEvent, new RoutedEventHandler(OnHwndMouseEnterOrLeave));
         }
 
-        protected HwndHostPresenter()
+        public HwndHostPresenter()
         {
             m_hwndAdorner = new HwndAdorner(this);
             AddLogicalChild(m_hwndAdorner.Root);
@@ -70,7 +70,7 @@ namespace HwndExtensions.Host
             }
         }
 
-        protected HwndHost HwndHost
+        public HwndHost HwndHost
         {
             get { return m_hwndHost; }
             set
@@ -88,7 +88,6 @@ namespace HwndExtensions.Host
                 }
             }
         }
-
 
         public UIElement Adornment
         {
@@ -325,7 +324,15 @@ namespace HwndExtensions.Host
         /// <summary>
         /// Inherited classes should decide whether to dispose the HwndHost child
         /// </summary>
-        protected abstract void Dispose(bool disposing);
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                var host = HwndHost;
+                if (host != null)
+                    host.Dispose();
+            }
+        }
 
         #endregion
     }
